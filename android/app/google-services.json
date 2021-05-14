@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "975145778822",
+    "project_id": "student-qr-7107f",
+    "storage_bucket": "student-qr-7107f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975145778822:android:46db31f2322a5251f5db07",
+        "android_client_info": {
+          "package_name": "com.acu.exam_qrcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975145778822-e8soknhqgdrc7c5tne1gjb31h82r9a3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANA0q9eZ9ij4BV2-9V5G0RjsoHT54d6vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975145778822-e8soknhqgdrc7c5tne1gjb31h82r9a3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
