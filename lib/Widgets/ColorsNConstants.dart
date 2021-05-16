@@ -13,3 +13,6 @@ double width = Get.width;
 double height = Get.height;
 const userscollection = "Users";
 const isloggedin = "isLoggedin";
+const qrcreationdate = "QRCreationDate";
+const lastlogindate = "LastLoginDate";
+const lastscandate = "LastScanDate";

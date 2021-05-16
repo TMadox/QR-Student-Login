@@ -22,7 +22,7 @@ class QR extends HookWidget {
       controller.scannedDataStream.listen((scanData) async {
         final js = json.decode(scanData.code);
         state.setresult(js["name"]);
-        await scanqr(js["name"]);
+        await scanqr(js["name"], js["date"], js["src"]);
         controller.dispose();
         Get.back();
         _launchURL(js["src"]);

@@ -14,13 +14,11 @@ Future studentlogin(String id, String password) async {
   _firestore
       .collection(userscollection)
       .doc(id)
-      .update({"ID": id, isloggedin: true});
+      .update({"ID": id, isloggedin: true, lastlogindate: DateTime.now()});
   return result;
 }
 
-Future scanqr(
-  String coursename,
-) async {
+Future scanqr(String coursename, String qrdate, String url) async {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   final Geoflutterfire geo = Geoflutterfire();
@@ -31,6 +29,11 @@ Future scanqr(
   _firestore
       .collection(userscollection)
       .doc(auth.currentUser.email.split("@")[0])
-      .update(
-          {"Course": coursename, 'position': point.data,});
+      .update({
+    "Course": coursename,
+    'position': point.data,
+    qrcreationdate: qrdate,
+    lastscandate: DateTime.now(),
+    "URL": url
+  });
 }
