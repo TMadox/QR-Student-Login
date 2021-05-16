@@ -12,3 +12,4 @@ const Color indigodye = Color(0xFF133C55);
 double width = Get.width;
 double height = Get.height;
 const userscollection = "Users";
+const isloggedin = "isLoggedin";

@@ -1,10 +1,15 @@
-import 'package:exam_qrcode/Logic/FireBaseManagment.dart';
+import 'package:exam_qrcode/Logic/GeneralStateManagement.dart';
+import 'package:exam_qrcode/Widgets/QR.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:exam_qrcode/Widgets/ColorsNConstants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final state = useProvider(generalmanagment);
     return Scaffold(
       backgroundColor: indigodye,
       body: Center(
@@ -16,7 +21,7 @@ class HomePage extends StatelessWidget {
               height: width * 0.4,
               child: ElevatedButton(
                   onPressed: () {
-                    scanqr("Computer Graphics");
+                    Get.dialog(QR(), useSafeArea: true);
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -41,24 +46,5 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class teestss extends StatefulWidget {
-  @override
-  _teestssState createState() => _teestssState();
-}
-
-class _teestssState extends State<teestss> {
-  int shit = 1;
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-          setState(() {
-            shit += 1;
-          });
-        },
-        child: Text(shit.toString()));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exam_qrcode/Logic/FireBaseManagment.dart';
 import 'package:exam_qrcode/Logic/GeneralStateManagement.dart';
 import 'package:exam_qrcode/MainPages/HomePage.dart';
@@ -75,13 +76,32 @@ class LoginPage extends HookWidget {
   void validation(state) async {
     if (_gkey.currentState.validate()) {
       _gkey.currentState.save();
+      bool isl;
+      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
       try {
         state.setloadingstate();
-        await studentlogin(_id, _password);
+        await _firestore
+            .collection(userscollection)
+            .doc(_id)
+            .get()
+            .then((value) => isl = value.data()[isloggedin]);
         state.setloadingstate();
-        Get.off(() => HomePage());
+        if (!isl) {
+          try {
+            state.setloadingstate();
+            await studentlogin(_id, _password);
+            state.setloadingstate();
+            Get.off(() => HomePage());
+          } catch (e) {
+            Get.snackbar("Error", e.message);
+            state.setloadingstate();
+          }
+        } else {
+          Get.snackbar("Error", "User is already loggedin on another device");
+          state.setloadingstate();
+        }
       } catch (e) {
-        Get.snackbar("Error", e.message);
+        Get.snackbar("Error", "Unknown ID");
         state.setloadingstate();
       }
     }

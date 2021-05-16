@@ -6,10 +6,15 @@ import 'package:geolocator/geolocator.dart';
 
 Future studentlogin(String id, String password) async {
   final auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final result = await auth.signInWithEmailAndPassword(
     email: id + "@acu.com",
     password: password,
   );
+  _firestore
+      .collection(userscollection)
+      .doc(id)
+      .update({"ID": id, isloggedin: true});
   return result;
 }
 
@@ -26,10 +31,6 @@ Future scanqr(
   _firestore
       .collection(userscollection)
       .doc(auth.currentUser.email.split("@")[0])
-      .update({
-    "ID": auth.currentUser.email.split("@")[0],
-    "Course": coursename,
-    'position': point.data,
-    "isWatching": true
-  });
+      .update(
+          {"Course": coursename, 'position': point.data,});
 }
