@@ -6,6 +6,9 @@ final generalmanagment = ChangeNotifierProvider<General>((ref) => General());
 class General extends ChangeNotifier {
   bool isloading = false;
   String result;
+  List selecteditems = [];
+  bool searchactive = false;
+  String searchedcourse = "";
   void setresult(String input) {
     result = input;
     notifyListeners();
@@ -13,6 +16,26 @@ class General extends ChangeNotifier {
 
   void setloadingstate() {
     isloading = !isloading;
+    notifyListeners();
+  }
+
+  void addtoselecteditems(String item) {
+    selecteditems.add(item);
+    notifyListeners();
+  }
+
+  void removefromselecteditems(String item) {
+    selecteditems.remove(item);
+    notifyListeners();
+  }
+
+  void setsearchwidth() {
+    searchactive = !searchactive;
+    notifyListeners();
+  }
+
+  void setsearchedcourse(String input) {
+    searchedcourse = input;
     notifyListeners();
   }
 }
