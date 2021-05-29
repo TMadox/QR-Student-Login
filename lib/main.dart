@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'MainPages/DashboardPage.dart';
+import 'MainPages/UserHistoryPage.dart';
 import 'Widgets/ColorsNConstants.dart';
 
 class MyObserver implements WidgetsBindingObserver {
@@ -24,8 +25,7 @@ class MyObserver implements WidgetsBindingObserver {
       _firestore
           .collection(userscollection)
           .doc(auth.currentUser.email.split("@")[0])
-          .update(
-              {isloggedin: false});
+          .update({isloggedin: false});
       Get.offAll(() => LoginPage());
     }
   }
@@ -66,5 +66,5 @@ void main() async {
   await Firebase.initializeApp();
   final obs = MyObserver();
   WidgetsBinding.instance.addObserver(obs);
-  runApp(ProviderScope(child: GetMaterialApp(home: LoginPage())));
+  runApp(ProviderScope(child: GetMaterialApp(home: HomePage())));
 }

@@ -4,6 +4,7 @@ import 'package:exam_qrcode/Widgets/ColorsNConstants.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:get_mac/get_mac.dart';
 
 Future studentlogin(String id, String password) async {
   final auth = FirebaseAuth.instance;
@@ -12,14 +13,15 @@ Future studentlogin(String id, String password) async {
     email: id + "@acu.com",
     password: password,
   );
-  _firestore
-      .collection(userscollection)
-      .doc(id)
-      .update({studentid: id, isloggedin: true, lastlogindate: DateTime.now()});
+  if (!id.contains("admin")) {
+    _firestore.collection(userscollection).doc(id).update(
+        {studentid: id, isloggedin: true, lastlogindate: DateTime.now()});
+  }
   return result;
 }
 
 Future scanqr(String course, String qrdate, String url) async {
+  Map temp;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   DocumentSnapshot student = await _firestore
@@ -31,40 +33,63 @@ Future scanqr(String course, String qrdate, String url) async {
       desiredAccuracy: LocationAccuracy.high);
   GeoFirePoint point = geo.point(
       latitude: currentpostion.latitude, longitude: currentpostion.altitude);
+  ////////////////////////////////////User History//////////////////////////////////////////
+  temp = student.data()[coursescounter];
+  if (student.data()[coursescounter].isEmpty) {
+    temp[course] = 1;
+    await _firestore
+        .collection(userscollection)
+        .doc(auth.currentUser.email.split("@")[0])
+        .update({coursescounter: temp});
+  } else if (student.data()[coursescounter].containsKey(course)) {
+    temp[course] += 1;
+    await _firestore
+        .collection(userscollection)
+        .doc(auth.currentUser.email.split("@")[0])
+        .update({coursescounter: temp});
+  } else if (!student.data()[coursescounter].containsKey(course)) {
+    temp[course] = 1;
+    await _firestore
+        .collection(userscollection)
+        .doc(auth.currentUser.email.split("@")[0])
+        .update({coursescounter: temp});
+  }
   await _firestore
       .collection(userscollection)
       .doc(auth.currentUser.email.split("@")[0])
       .update({
     lastcoursejoined: course,
     'position': point.data,
-    qrcreationdate: qrdate,
     lastscandate: DateTime.now(),
-    "Last URL Joined": url
+    "Last URL Joined": url,
   }).whenComplete(() => _firestore
               .collection(userscollection)
               .doc(auth.currentUser.email.split("@")[0])
               .collection("History")
               .add({
             coursename: course,
-            "URL": url,
-            joindate: DateTime.now(),
-            "Login Date": student.data()[lastlogindate]
+            // "URL": url,
+            scandate: DateTime.now(),
+            "Login Date": student.data()[lastlogindate],
+            qrcreationdate: qrdate
           }));
-
+////////////////////////////////////Course History//////////////////////////////////////////
   await _firestore
       .collection(coursescollection)
       .doc(course)
-      .set({"Department": "Electricity", "Name": course}).whenComplete(() =>
-          _firestore
-              .collection(coursescollection)
-              .doc(course)
-              .collection("History")
-              .add({
-            coursename: course,
-            studentname: student.data()["Name"],
-            studentid: auth.currentUser.email.split("@")[0],
-            joindate: DateTime.now()
-          }));
+      .set({"Department": "Electricity", "Name": course}).whenComplete(
+          () async => _firestore
+                  .collection(coursescollection)
+                  .doc(course)
+                  .collection("History")
+                  .add({
+                coursename: course,
+                studentname: student.data()[studentname],
+                studentid: auth.currentUser.email.split("@")[0],
+                scandate: DateTime.now(),
+                studentmac: await GetMac.macAddress,
+                qrcreationdate: qrdate
+              }));
 }
 
 final firebasestudentstream = StreamProvider<QuerySnapshot>((ref) {

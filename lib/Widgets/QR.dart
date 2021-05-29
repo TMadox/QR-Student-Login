@@ -47,7 +47,12 @@ class QR extends HookWidget {
                       'Barcode Type: ${result.format}   Data: ${result.code}')
                   : Text('Scan a code'),
             ),
-          )
+          ),
+          ElevatedButton(
+              onPressed: () {
+                print("tessst");
+              },
+              child: Text("test"))
         ],
       ),
     );

@@ -14,8 +14,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 // ignore: must_be_immutable
 class LoginPage extends HookWidget {
   GlobalKey<FormState> _gkey = GlobalKey<FormState>();
-  var _id;
-  var _password;
+  String _id;
+  String _password;
   @override
   Widget build(BuildContext context) {
     final state = useProvider(generalmanagment);
@@ -59,7 +59,7 @@ class LoginPage extends HookWidget {
                 ),
                 FirstButtons(
                   onpressed: () {
-                    validation(state);
+                    firstvalidation(state);
                   },
                   label: "Login",
                   icon: Icons.login,
@@ -74,35 +74,52 @@ class LoginPage extends HookWidget {
   }
 
   void validation(state) async {
-    if (_gkey.currentState.validate()) {
-      _gkey.currentState.save();
-      bool isl;
-      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      try {
-        state.setloadingstate();
-        await _firestore
-            .collection(userscollection)
-            .doc(_id)
-            .get()
-            .then((value) => isl = value.data()[isloggedin]);
-        state.setloadingstate();
-        if (!isl) {
-          try {
-            state.setloadingstate();
-            await studentlogin(_id, _password);
-            state.setloadingstate();
-            Get.off(() => HomePage());
-          } catch (e) {
-            Get.snackbar("Error", e.message);
-            state.setloadingstate();
-          }
-        } else {
-          Get.snackbar("Error", "User is already loggedin on another device");
+    bool isl;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    try {
+      state.setloadingstate();
+      await _firestore
+          .collection(userscollection)
+          .doc(_id)
+          .get()
+          .then((value) => isl = value.data()[isloggedin]);
+      state.setloadingstate();
+      if (!isl) {
+        try {
+          state.setloadingstate();
+          await studentlogin(_id, _password);
+          state.setloadingstate();
+          Get.to(() => HomePage());
+        } catch (e) {
+          Get.snackbar("Error", e.message);
           state.setloadingstate();
         }
-      } catch (e) {
-        Get.snackbar("Error", "Unknown ID");
+      } else {
         state.setloadingstate();
+        Get.snackbar("Error", "User is already loggedin on another device");
+        state.setloadingstate();
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Unknown ID");
+      state.setloadingstate();
+    }
+  }
+
+  void firstvalidation(state) async {
+    if (_gkey.currentState.validate()) {
+      _gkey.currentState.save();
+      if (_id.contains("admin")) {
+        try {
+          state.setloadingstate();
+          await studentlogin(_id, _password);
+          state.setloadingstate();
+          Get.off(() => HomePage());
+        } catch (e) {
+          Get.snackbar("Error", e.message);
+          state.setloadingstate();
+        }
+      } else {
+        validation(state);
       }
     }
   }

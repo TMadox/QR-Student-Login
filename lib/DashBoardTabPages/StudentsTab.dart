@@ -31,11 +31,11 @@ class StudentsTab extends HookWidget {
                                   : state.addtoselecteditems(e.id);
                             },
                             leading: Text(
-                              e.data()["Name"],
+                              e.data()[studentname],
                               style: TextStyle(color: indigodye),
                             ),
                             trailing: Text(
-                              e.data()["ID"],
+                              e.data()[studentid],
                               style: TextStyle(color: indigodye),
                             ),
                           ),

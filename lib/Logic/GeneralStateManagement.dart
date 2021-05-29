@@ -9,6 +9,7 @@ class General extends ChangeNotifier {
   List selecteditems = [];
   bool searchactive = false;
   String searchedcourse = "";
+  bool isadminuser=false;
   void setresult(String input) {
     result = input;
     notifyListeners();

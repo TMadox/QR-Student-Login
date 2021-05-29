@@ -18,8 +18,6 @@ class DashboardPage extends HookWidget {
                   Text("Dashboard"),
                 ],
               ),
-              leading:
-                  IconButton(icon: Icon(Icons.select_all), onPressed: () {}),
               backgroundColor: redpurple,
               bottom: TabBar(indicatorColor: Colors.white, tabs: [
                 Tab(

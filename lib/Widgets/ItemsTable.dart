@@ -23,8 +23,7 @@ class ItemsTable extends HookWidget {
                     : coursescollection)
                 .doc(id)
                 .collection("History")
-                .where(
-                    tabletype == userscollection ? 'CourseName' : 'StudentID',
+                .where(tabletype == userscollection ? coursename : studentid,
                     isEqualTo: state.searchedcourse)
                 .snapshots()
             : FirebaseFirestore.instance
@@ -55,12 +54,13 @@ class ItemsTable extends HookWidget {
                         return redpurple.withOpacity(0.2);
                       return null;
                     }),
-                    cells: document
-                        .data()
-                        .keys
-                        .map((e) =>
-                            DataCell(Text(document.data()[e].toString())))
-                        .toList());
+                    cells: document.data().keys.map((e) {
+                      if (document.data()[e] is Timestamp) {
+                        return DataCell(
+                            Text(document.data()[e].toDate().toString()));
+                      }
+                      return DataCell(Text(document.data()[e].toString()));
+                    }).toList());
               }).toList(),
             );
           }
@@ -69,7 +69,7 @@ class ItemsTable extends HookWidget {
               child: Text("Error"),
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
