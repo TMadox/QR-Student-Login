@@ -15,14 +15,51 @@ class StudentsTab extends HookWidget {
     final state = useProvider(generalmanagment);
     return Container(
         child: StreamBuilder<QuerySnapshot>(
-            stream: state.searchedcourse.isNotEmpty
-                ? FirebaseFirestore.instance
-                    .collection(userscollection)
-                    .doc()
-                    .snapshots()
-                : FirebaseFirestore.instance
-                    .collection(userscollection)
-                    .where(studentname, isEqualTo: state.searchedcourse),builder: (BuildContext context, A),));
+      stream: state.searchedcourse.isNotEmpty
+          ? FirebaseFirestore.instance
+              .collection(userscollection)
+              .where(studentid, isEqualTo: state.searchedcourse)
+              .snapshots()
+          : FirebaseFirestore.instance.collection(userscollection).snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData && snapshot.data.docs.isNotEmpty) {
+          return ListView(
+            children: snapshot.data.docs
+                .map((e) => Card(
+                      child: ListTile(
+                        selected: state.selecteditems.contains(e.id),
+                        selectedTileColor: skyblue,
+                        onTap: () {
+                          Get.to(() => StudentProfile(), arguments: e.id);
+                        },
+                        onLongPress: () {
+                          state.selecteditems.contains(e.id)
+                              ? state.removefromselecteditems(e.id)
+                              : state.addtoselecteditems(e.id);
+                        },
+                        leading: Text(
+                          e.data()[studentname],
+                          style: TextStyle(color: indigodye),
+                        ),
+                        trailing: Text(
+                          e.data()[studentid],
+                          style: TextStyle(color: indigodye),
+                        ),
+                      ),
+                    ))
+                .toList(),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Error"),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    ));
   }
 }
 //  {

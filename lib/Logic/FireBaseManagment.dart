@@ -73,6 +73,7 @@ Future scanqr(String course, String qrdate, String url) async {
             "Login Date": student.data()[lastlogindate],
             qrcreationdate: qrdate
           }));
+  print("test");
 ////////////////////////////////////Course History//////////////////////////////////////////
   await _firestore
       .collection(coursescollection)
