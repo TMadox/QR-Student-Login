@@ -6,7 +6,8 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'UserHistoryPage.dart';
 
-class ProfilePage extends StatelessWidget {
+class StudentProfile extends StatelessWidget {
+  var student = Get.arguments;
   final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Profile"),
+        title: Text("Student Profile"),
         backgroundColor: redpurple,
       ),
       body: Container(
@@ -25,7 +26,7 @@ class ProfilePage extends StatelessWidget {
               child: StreamBuilder<DocumentSnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection(userscollection)
-                      .doc(auth.currentUser.email.split("@")[0])
+                      .doc(student)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                     if (snapshot.hasData) {
@@ -70,10 +71,8 @@ class ProfilePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                Get.to(() => UserHistoryPage(), arguments: [
-                  auth.currentUser.email.split("@")[0],
-                  userscollection
-                ]);
+                Get.to(() => UserHistoryPage(),
+                    arguments: [student, userscollection]);
               },
               child: Text("My History"),
               style: ElevatedButton.styleFrom(primary: redpurple),

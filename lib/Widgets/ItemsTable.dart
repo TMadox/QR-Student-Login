@@ -13,29 +13,29 @@ class ItemsTable extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final state = useProvider(generalmanagment);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: state.searchedcourse.isNotEmpty
-            ? FirebaseFirestore.instance
-                .collection(tabletype == userscollection
-                    ? userscollection
-                    : coursescollection)
-                .doc(id)
-                .collection("History")
-                .where(tabletype == userscollection ? coursename : studentid,
-                    isEqualTo: state.searchedcourse)
-                .snapshots()
-            : FirebaseFirestore.instance
-                .collection(tabletype == userscollection
-                    ? userscollection
-                    : coursescollection)
-                .doc(id)
-                .collection("History")
-                .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData && snapshot.data.docs.isNotEmpty) {
-            return DataTable(
+    return StreamBuilder<QuerySnapshot>(
+      stream: state.searchedcourse.isNotEmpty
+          ? FirebaseFirestore.instance
+              .collection(tabletype == userscollection
+                  ? userscollection
+                  : coursescollection)
+              .doc(id)
+              .collection("History")
+              .where(tabletype == userscollection ? coursename : studentid,
+                  isEqualTo: state.searchedcourse)
+              .snapshots()
+          : FirebaseFirestore.instance
+              .collection(tabletype == userscollection
+                  ? userscollection
+                  : coursescollection)
+              .doc(id)
+              .collection("History")
+              .snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData && snapshot.data.docs.isNotEmpty) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
               showBottomBorder: true,
               showCheckboxColumn: true,
               sortAscending: true,
@@ -62,17 +62,17 @@ class ItemsTable extends HookWidget {
                       return DataCell(Text(document.data()[e].toString()));
                     }).toList());
               }).toList(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Error"),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+            ),
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Error"),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

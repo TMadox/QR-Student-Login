@@ -50,9 +50,9 @@ class QR extends HookWidget {
           ),
           ElevatedButton(
               onPressed: () {
-                print("tessst");
+                Get.back();
               },
-              child: Text("test"))
+              child: Text("Back"))
         ],
       ),
     );
